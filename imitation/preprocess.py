@@ -34,3 +34,5 @@ def playFile():
 
     cap.release()
     cv2.destroyAllWindows()
+
+getFrames()
