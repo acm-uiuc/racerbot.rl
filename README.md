@@ -38,6 +38,15 @@ ROS Sensor Nodes:
 
 # CARLA Simulator
 
+# Resources
+https://arxiv.org/pdf/1710.02410.pdf  
+https://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf  
+https://pytorch.org/tutorials/beginner/data_loading_tutorial.html  
+https://towardsdatascience.com/a-comprehensive-guide-to-convolutional-neural-networks-the-eli5-way-3bd2b1164a53  
+https://docs.google.com/document/d/1qA9CaBvesFW-PzkKNyNZu4MHOpyo6yaOSsx0UsCUAUE/edit  
+https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html  
+http://planning.cs.uiuc.edu/node658.html  
+
 
 
 
