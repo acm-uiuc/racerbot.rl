@@ -1,6 +1,8 @@
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+import dataloader as dl
+from torch.utils.data import Dataset, DataLoader
 
 class Net(nn.Module):
     def __init__(self):
@@ -29,7 +31,8 @@ class Net(nn.Module):
 net = Net()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
-
+data = dl.AVData("vid1.mp4")
+trainloader = DataLoader(data, batch_size=5, shuffle=True, num_workers=1)
 for epoch in range(5):  # loop over the dataset multiple times
 
     running_loss = 0.0
