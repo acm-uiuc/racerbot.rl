@@ -2,12 +2,12 @@
 autonomous racecar minimizing lap time using reinforcement learning
 <Author: Kazuki Shin>
 
-#Conda Env
+# Conda Env
 conda create -n racecar
 conda activate racecar
 conda install python
 
-#ROS
+# ROS
 
 Custom ROS package:
 - created by Kazuki Shin
