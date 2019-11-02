@@ -6,10 +6,10 @@ autonomous racecar minimizing lap time using reinforcement learning
 <preprocess.py>
 - mp4 video to frames
 - data parsing (parse out crash footage)
-- data augmenting (flip, rotate, etc)
+- data augmenting (flip, rotate, etc)  
 <dataloader.py>
 - convert raw data into PyTorch tensors
-- enumerate through dataloader in training
+- enumerate through dataloader in training  
 <train.py>
 - trains the inputs through custom CNN model
 - initial normalization of pixel values (0-255 -> 0-1)
