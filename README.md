@@ -1,11 +1,30 @@
 # racerbot.rl
 autonomous racecar minimizing lap time using reinforcement learning
+<Author: Kazuki Shin>
 
-Reinforcement Learning
-Kazuki, Naveen, Michael, Rohan
+#Conda Env
+conda create -n racecar
+conda activate racecar
+conda install python
 
-AWS DeepRacer
-Rohan, Tom, Hyosang, Geoffrey
+#ROS
 
-Isaac SDK and ROS
-Aman, Mitchell, Alex
+Custom ROS package:
+- created by Kazuki Shin
+- /config/racecar
+
+ROS Dependencies:
+
+ROS Sensor Nodes:
+- Logitec USB Camera
+- ZED 3D Structure Camera
+- IMU Sensor
+- mmWave Radar
+- VESC motor controller
+
+# CARLA Simulator
+
+
+
+
+
