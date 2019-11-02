@@ -1,5 +1,6 @@
 # racerbot.rl
 autonomous racecar minimizing lap time using reinforcement learning  
+https://github.com/acm-uiuc/racerbot.rl  
 <Author: Kazuki Shin>
 
 # Scripts
