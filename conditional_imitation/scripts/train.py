@@ -7,7 +7,7 @@ from torch.utils.data import Dataset, DataLoader
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
-        self.conv1 = nn.Conv2d(3, 24, 5)
+        self.conv1 = nn.Conv2d(720, 24, 5)
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(24, 36, 5)
         self.conv3 = nn.Conv2d(36, 48, 5)
