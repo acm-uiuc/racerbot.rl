@@ -31,12 +31,12 @@ class Net(nn.Module):
 net = Net()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
-data = dl.AVData("vid1.mp4")
-trainloader = DataLoader(data, batch_size=5, shuffle=True, num_workers=1)
+data = dl.AVData("vid.mp4")
+train_loader = DataLoader(data, batch_size=5, shuffle=True, num_workers=1)
 for epoch in range(5):  # loop over the dataset multiple times
 
     running_loss = 0.0
-    for i, data in enumerate(trainloader, 0):
+    for i, data in enumerate(train_loader, 0):
         # get the inputs; data is a list of [inputs, labels]
         inputs, labels = data
 

@@ -10,7 +10,7 @@ from torchvision import transforms, utils
 import cv2
 
 def read_video(filename):
-    path = '/home/rohang62/frames'
+    path = '/home/kazukis2/Documents/racerbot.rl/conditional_imitation/scripts/frames'
     dataset = []
     vid = cv2.VideoCapture(filename)
     sucess = True
