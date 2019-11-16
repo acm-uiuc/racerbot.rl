@@ -11,13 +11,14 @@ from torchvision import utils
 import torchvision.transforms as transforms
 import cv2
 
-def read_video(filename):
-    path = '/home/rohang62/Documents/racerbot.rl/conditional_imitation/scripts/frames'
+def read_video(filename, root_dir):
+    #create frames folder in root_dir
+    path = os.path.join(root_dir, "frames")
     dataset = []
     vid = cv2.VideoCapture(filename)
     sucess = True
     success,image = vid.read()
-    count = 1
+    count = 0
     while success:
         grayscale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         # cv2.imshow("image", image)
@@ -28,12 +29,13 @@ def read_video(filename):
         count += 1
         success,image = vid.read()
 
-    return path, count - 1
+    return path, count
 
 class AVData(Dataset):
-    def __init__(self, dataset, transform):
+    def __init__(self, dataset, transform, root_dir):
         self.dataset = dataset
-        self.dir, self.len = read_video(dataset)
+        self.root_dir = root_dir
+        self.frame_dir, self.len = read_video(dataset, root_dir)
         self.steering = np.random.randint(1,101,len(self))
         self.transform = transform
 
@@ -41,7 +43,9 @@ class AVData(Dataset):
         return self.len
 
     def __getitem__(self, index):
-        s = cv2.imread(os.path.join(self.dir, "frame%d.jpg" % index))
+        if torch.is_tensor(index):
+            index = index.tolist()
+        s = cv2.imread(os.path.join(self.frame_dir, "frame%d.jpg" % index))
         return self.transform(s), self.steering[index - 1]
 
 # dataset = AVData(read_video("vid.mp4"))

@@ -13,10 +13,14 @@ class Net(nn.Module):
         self.conv1 = nn.Conv2d(3, 24, 5)
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(24, 36, 5)
+        self.pool = nn.MaxPool2d(2, 2)
         self.conv3 = nn.Conv2d(36, 48, 5)
+        self.pool = nn.MaxPool2d(2, 2)
         self.conv4 = nn.Conv2d(48, 64, 3)
+        self.pool = nn.MaxPool2d(2, 2)
         self.conv5 = nn.Conv2d(64, 64, 3)
-        self.fc1 = nn.Linear(512, 100)
+        self.pool = nn.MaxPool2d(2, 2)
+        self.fc1 = nn.Linear(64 * 9, 100)
         self.fc2 = nn.Linear(100, 50)
         self.fc3 = nn.Linear(50, 10)
     def forward(self, x):
@@ -25,16 +29,16 @@ class Net(nn.Module):
         x = self.pool(F.relu(self.conv3(x)))
         x = self.pool(F.relu(self.conv4(x)))
         x = self.pool(F.relu(self.conv5(x)))
-        x = x.view(-1,x.size(0))
+        x = x.view(-1,64 * 9)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
         return x
 
 transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-
-trainset = dl.AVData("vid.mp4", transform)
-train_loader = torch.utils.data.DataLoader(trainset, batch_size=512, shuffle=True, num_workers=2)
+#Put name of video, transformations and root directory
+trainset = dl.AVData("vid.mp4", transform, '/home/rohang62/Documents/racerbot.rl/conditional_imitation/scripts')
+train_loader = torch.utils.data.DataLoader(trainset, batch_size=128, shuffle=True, num_workers=2)
 net = Net()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
@@ -45,7 +49,7 @@ for epoch in range(5):  # loop over the dataset multiple times
     for i, data in enumerate(train_loader, 0):
         # get the inputs; data is a list of [inputs, labels]
         inputs, labels = data
-        print(inputs[0].shape)
+        print(inputs.shape)
         # zero the parameter gradients
         optimizer.zero_grad()
 
