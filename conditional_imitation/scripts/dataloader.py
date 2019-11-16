@@ -10,6 +10,7 @@ import torchvision
 from torchvision import utils
 import torchvision.transforms as transforms
 import cv2
+from PIL import Image
 
 def read_video(filename, root_dir):
     #create frames folder in root_dir
@@ -20,12 +21,11 @@ def read_video(filename, root_dir):
     success,image = vid.read()
     count = 0
     while success:
-        grayscale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         # cv2.imshow("image", image)
         # cv2.waitKey(0)
         # cv2.imshow("image", grayscale)
         # cv2.waitKey(0)
-        cv2.imwrite(os.path.join(path, "frame%d.jpg" % count), grayscale)
+        cv2.imwrite(os.path.join(path, "frame%d.jpg" % count), image)
         count += 1
         success,image = vid.read()
 
@@ -45,8 +45,8 @@ class AVData(Dataset):
     def __getitem__(self, index):
         if torch.is_tensor(index):
             index = index.tolist()
-        s = cv2.imread(os.path.join(self.frame_dir, "frame%d.jpg" % index))
-        return self.transform(s), self.steering[index - 1]
+        s = Image.open(os.path.join(self.frame_dir, "frame%d.jpg" % index))
+        return self.transform(s), self.steering[index]
 
 # dataset = AVData(read_video("vid.mp4"))
 # train_loader = DataLoader(dataset, batch_size=10, shuffle=True, num_workers=1)
