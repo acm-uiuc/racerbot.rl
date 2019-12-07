@@ -36,7 +36,7 @@ class AVData(Dataset):
         self.dataset = dataset
         self.root_dir = root_dir
         self.frame_dir, self.len = read_video(dataset, root_dir)
-        self.steering = np.random.randint(1,101,len(self))
+        self.steering = np.random.randint(1,101,self.len)
         self.transform = transform
 
     def __len__(self):

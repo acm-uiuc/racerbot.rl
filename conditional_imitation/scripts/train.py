@@ -10,42 +10,101 @@ import torchvision.transforms as transforms
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
-        self.conv1 = nn.Conv2d(3, 24, 5)
+        self.conv1 = nn.Conv2d(in_channels = 3, out_channels = 24, kernel_size = 5, padding = 2)
         self.pool = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(24, 36, 5)
-        self.conv3 = nn.Conv2d(36, 48, 5)
-        self.conv4 = nn.Conv2d(48, 64, 3)
-        self.conv5 = nn.Conv2d(64, 64, 3)
-        self.fc1 = nn.Linear(1164, 100)
-        self.fc2 = nn.Linear(100, 50)
-        self.fc3 = nn.Linear(50, 10)
+        self.conv2 = nn.Conv2d(in_channels = 24, out_channels = 36, kernel_size = 5, padding = 2)
+        self.conv3 = nn.Conv2d(in_channels = 36, out_channels = 48, kernel_size = 3, padding = 1)
+        self.conv4 = nn.Conv2d(in_channels = 48, out_channels = 64, kernel_size = 3, padding = 1)
+        self.conv5 = nn.Conv2d(in_channels = 64, out_channels = 64, kernel_size = 3, padding = 1)
+        self.fc1 = nn.Linear(in_features = 64 * 1 * 1, out_features = 200)
+        self.fc2 = nn.Linear(in_features = 200, out_features = 84)
+        self.fc3 = nn.Linear(in_features = 84, out_features = 10)
+        # self.conv_layers = nn.Sequential(
+        # nn.Conv2d(3, 24, 5, stride=2),
+        # nn.ELU(),
+        # nn.Conv2d(24, 36, 5, stride=2),
+        # nn.ELU(),
+        # nn.Conv2d(36, 48, 5, stride=2),
+        # nn.ELU(),
+        # nn.Conv2d(48, 64, 3),
+        # nn.ELU(),
+        # nn.Conv2d(64, 64, 3),
+        # nn.Dropout(0.25)
+        # )
+        # self.linear_layers = nn.Sequential(
+        # nn.Linear(64 * 2 * 33, 100),
+        # nn.ELU(),
+        # nn.Linear(100, 50),
+        # nn.ELU(),
+        # nn.Linear(50, 10),
+        # nn.Linear(10, 1)
+        # )
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
         x = self.pool(F.relu(self.conv2(x)))
         x = self.pool(F.relu(self.conv3(x)))
         x = self.pool(F.relu(self.conv4(x)))
         x = self.pool(F.relu(self.conv5(x)))
-        x = x.view(-1,1164)
+        x = x.view(-1,64 * 1 * 1)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
+        # x = x.view(x.size(0), 3, 16, 48)
+        # x = self.conv_layers(x)
+        # x = x.view(x.size(0), -1)
+        # x = self.linear_layers(x)
         return x
 
-transform = transforms.Compose([transforms.Resize((66, 200)), transforms.Grayscale(num_output_channels=3), transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-#Put name of video, transformations and root directory
-trainset = dl.AVData("vid.mp4", transform, '/home/rohang62/Documents/racerbot.rl/conditional_imitation/scripts')
-train_loader = torch.utils.data.DataLoader(trainset, batch_size=128, shuffle=True, num_workers=2)
+# class Net(nn.Module):
+#     def __init__(self):
+#         super(Net, self).__init__()
+#         self.conv1 = nn.Conv2d(3, 6, 5)
+#         self.pool = nn.MaxPool2d(2, 2)
+#         self.conv2 = nn.Conv2d(6, 16, 5)
+#         self.fc1 = nn.Linear(16 * 5 * 5, 120)
+#         self.fc2 = nn.Linear(120, 84)
+#         self.fc3 = nn.Linear(84, 10)
+#
+#     def forward(self, x):
+#         x = self.pool(F.relu(self.conv1(x)))
+#         x = self.pool(F.relu(self.conv2(x)))
+#         x = x.view(-1, 16 * 5 * 5)
+#         x = F.relu(self.fc1(x))
+#         x = F.relu(self.fc2(x))
+#         x = self.fc3(x)
+#         return x
+
+# transform = transforms.Compose([transforms.Grayscale(num_output_channels=3), transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+# #Put name of video, transformations and root directory
+# trainset = dl.AVData("vid.mp4", transform, '/home/rohang62/Documents/racerbot.rl/conditional_imitation/scripts')
+# trainloader = torch.utils.data.DataLoader(trainset, batch_size=32, shuffle=True, num_workers=4)
+transform = transforms.Compose(
+    [transforms.ToTensor(),
+     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+
+trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
+                                        download=True, transform=transform)
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=4,
+                                          shuffle=True, num_workers=2)
+
+testset = torchvision.datasets.CIFAR10(root='./data', train=False,
+                                       download=True, transform=transform)
+testloader = torch.utils.data.DataLoader(testset, batch_size=4,
+                                         shuffle=False, num_workers=2)
+
+classes = ('plane', 'car', 'bird', 'cat',
+           'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 net = Net()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-for epoch in range(5):  # loop over the dataset multiple times
+for epoch in range(2):  # loop over the dataset multiple times
 
     running_loss = 0.0
-    for i, data in enumerate(train_loader, 0):
+    for i, data in enumerate(trainloader, 0):
         # get the inputs; data is a list of [inputs, labels]
         inputs, labels = data
-        print(inputs.shape)
+
         # zero the parameter gradients
         optimizer.zero_grad()
 
@@ -63,3 +122,34 @@ for epoch in range(5):  # loop over the dataset multiple times
             running_loss = 0.0
 
 print('Finished Training')
+
+correct = 0
+total = 0
+with torch.no_grad():
+    for data in testloader:
+        images, labels = data
+        outputs = net(images)
+        _, predicted = torch.max(outputs.data, 1)
+        total += labels.size(0)
+        correct += (predicted == labels).sum().item()
+
+print('Accuracy of the network on the 10000 test images: %d %%' % (
+    100 * correct / total))
+
+class_correct = list(0. for i in range(10))
+class_total = list(0. for i in range(10))
+with torch.no_grad():
+    for data in testloader:
+        images, labels = data
+        outputs = net(images)
+        _, predicted = torch.max(outputs, 1)
+        c = (predicted == labels).squeeze()
+        for i in range(4):
+            label = labels[i]
+            class_correct[label] += c[i].item()
+            class_total[label] += 1
+
+
+for i in range(10):
+    print('Accuracy of %5s : %2d %%' % (
+        classes[i], 100 * class_correct[i] / class_total[i]))
